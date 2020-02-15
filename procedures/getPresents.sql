@@ -1,0 +1,9 @@
+DELIMITER //
+DROP PROCEDURE IF EXISTS getPresents //
+
+CREATE PROCEDURE getPresents()
+BEGIN
+  SELECT *
+    FROM presents;
+END //
+DELIMITER ;
