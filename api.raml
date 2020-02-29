@@ -1,0 +1,172 @@
+#%RAML 1.0
+title: giftRegistry API
+version: v1
+baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
+
+/users:
+  get:
+    description: Lists all the users.
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "users":[
+                  {
+                    "user_id": "1",
+                    "user_name": "Shayan Abedi",
+                    "email": "abedi.shayan@unb.ca"
+                  },
+                  {
+                    "user_id": "2",
+                    "user_name": "Austin Fraser",
+                    "email": "afraser6@unb.ca"
+                  }
+                ]
+              }
+      500:
+  post:
+    description: Add a new user to the users list.
+    queryParameters:
+      access_token:
+        description: "The access token provided by the authentication application"
+        required: true
+        type: string
+      user_name:
+        required: true,
+        type: string
+      email:
+        required: true,
+        type: string
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {"message": "The user has been properly entered to the collection",
+              "resource_url":  "/users/{userId}"}
+      400:
+  /{userId}:
+    get:
+      description: Retrieve a specific user with `userId = {userId}`.
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+									{
+										"user_id": "1",
+										"user_name": "Shayan Abedi",
+										"email": "abedi.shayan@unb.ca"
+									}
+								}
+        404:
+          body:
+            application/json:
+              example:
+                {"message": "User not exists with a given user id."}
+    put:
+      description: Edit user's informations (name and email).
+      responses:
+        204:
+      queryParameters:
+        access_token:
+          description: "The access token provided by the authentication application"
+          required: true
+          type: string
+    delete:
+      description: Delete a user.
+      responses:
+        204:
+      queryParameters:
+        access_token:
+          description: "The access token provided by the authentication application"
+          required: true
+          type: string
+    /presents:
+      get:
+        description: Retrieve a specific user's present list.
+        responses:
+          200:
+            body:
+              application/json:
+                example:
+                  {
+										"presents":[
+											{
+												"present_id": "1",
+												"present_name": "Computer keyboard",
+												"link": "https://www.amazon.com/dp/B078FGHZQ8/ref=cm_sw_em_r_mt_dp_U_2IatEbF5MCM3P",
+												"user_id":"1"
+											},
+											{
+												"present_id": "2",
+												"present_name": "Computer mouse",
+												"link": "https://www.amazon.com/dp/B013WC0P2A/ref=cm_sw_em_r_mt_dp_U_ILatEb9NJEZMM",
+												"user_id":"1"
+											}
+										]
+									}
+          500:
+      post:
+        description: Add a new present to the user's present list.
+        queryParameters:
+          access_token:
+            description: "The access token provided by the authentication application"
+            required: true
+            type: string
+          present_name:
+            required: true,
+            type: string
+          link:
+            required: true,
+            type: string
+        responses:
+          201:
+            body:
+              application/json:
+                example:
+                  {"message": "The present has been properly entered to the presents collection",
+                   "resource_url":  "/users/{userId}/presents/{presentId}"}
+          400:
+      /{presentId}:
+        get:
+          description: Retrieve a specific present with `presentId = {presentId}`.
+          responses:
+            200:
+              body:
+                application/json:
+                  example:
+                    {
+                      {
+                        "present_id": "1",
+                        "present_name": "Computer keyboard",
+                        "link": "https://www.amazon.com/dp/B078FGHZQ8/ref=cm_sw_em_r_mt_dp_U_2IatEbF5MCM3P",
+                        "user_id": "1"
+                      }
+                  }
+            404:
+              body:
+                application/json:
+                  example:
+                    {"message": "Present not exists with a given present id."}
+        put:
+          description: Edit present's informations (name and link).
+          responses:
+            204:
+          queryParameters:
+            access_token:
+              description: "The access token provided by the authentication application"
+              required: true
+              type: string
+        delete:
+          description: Delete a present.
+          responses:
+            204:
+          queryParameters:
+            access_token:
+              description: "The access token provided by the authentication application"
+              required: true
+              type: string
