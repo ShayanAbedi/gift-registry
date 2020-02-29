@@ -83,10 +83,10 @@ class Users(Resource):
 		userName = request.json['user_name'];
 		email = request.json['email'];
     
-        if ('img_url' in request.json):
-            img = request.json['img_url'];
-        else:
-            img = NULL
+        	if ('img_url' in request.json):
+            		img = request.json['img_url'];
+        	else:
+            		img = NULL
             
 		
 
