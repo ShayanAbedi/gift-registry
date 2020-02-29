@@ -6,6 +6,7 @@ CREATE PROCEDURE addUser(
     )
 BEGIN
     INSERT INTO users (user_name, email, img_url) VALUES (name, email, img);
+SELECT LAST_INSERT_ID();
 END //
 DELIMITER ;
 
