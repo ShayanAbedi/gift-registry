@@ -169,7 +169,7 @@ class User(Resource):
 			dbConnection.close()
    
 		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
-		uri = uri+'users'+'/'+str(userId)
+		uri = uri+'/users/'+str(userId)
 		return make_response(jsonify( {"URI":uri} ), 200) 
 
     # DELETE: Delete identified school resource
