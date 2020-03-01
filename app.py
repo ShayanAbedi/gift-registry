@@ -72,7 +72,7 @@ class Users(Resource):
         # Sample command line usage:
         #
         # curl -i -X POST -H "Content-Type: application/json"
-        #    -d '{"email": "test@gmail.com", "user_name": "test Adding Users""}'
+        #    -d '{"email": "test@gmail.com", "user_name": "test Adding Users"}'
         #         http://info3103.cs.unb.ca:41921/users
 
 		if not request.json or not 'user_name' in request.json:
@@ -143,7 +143,7 @@ class User(Resource):
 
     # DELETE: Delete identified school resource
     #
-    # Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/schools/2
+    # Example request: curl -X DELETE http://info3103.cs.unb.ca:41921/users/2
 	def delete(self, userId):
 		try:
 			dbConnection = pymysql.connect(
