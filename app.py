@@ -170,7 +170,7 @@ class User(Resource):
    
 		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+str(request.url_rule)+'/'+str(userId)
-		return make_response(jsonify( {"URI":uri} ), 204) 
+		return make_response(jsonify( {"URI":uri} ), 200) 
 
     # DELETE: Delete identified school resource
     #
@@ -195,7 +195,7 @@ class User(Resource):
 		finally:
 			cursor.close()
 			dbConnection.close()
-		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 204)
+		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 200)
 ####################################################################################
 #
 # Identify/create endpoints and endpoint objects
