@@ -136,7 +136,42 @@ class User(Resource):
 			cursor.close()
 			dbConnection.close()
 		return make_response(jsonify({"user": row}), 200)
- 
+
+	def put(self, userId):
+		if not request.json:
+			abort(400) # bad request
+
+		# Pull the results out of the json request
+		userName = request.json['user_name']
+		email = request.json['email']
+		if 'img_url' in request.json:
+			img = request.json['img_url']
+		else:
+			img = ""
+  
+		try:
+			dbConnection = pymysql.connect(settings.DB_HOST,
+				settings.DB_USER,
+				settings.DB_PASSWD,
+				settings.DB_DATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'updateUser'
+			cursor = dbConnection.cursor()
+			sqlArgs = (userId, userName, email, img) 
+			cursor.callproc(sql,sqlArgs) 
+			row = cursor.fetchone()
+			dbConnection.commit() 
+		except:
+			abort(500) 
+		finally:
+			cursor.close()
+			dbConnection.close()
+   
+		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = uri+str(request.url_rule)+'/'+str(userId)
+		return make_response(jsonify( {"URI":uri} ), 204) 
+
     # DELETE: Delete identified school resource
     #
     # Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/users/2
@@ -160,7 +195,7 @@ class User(Resource):
 		finally:
 			cursor.close()
 			dbConnection.close()
-		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 200)
+		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 204)
 ####################################################################################
 #
 # Identify/create endpoints and endpoint objects
