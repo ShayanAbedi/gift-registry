@@ -145,13 +145,28 @@ class User(Resource):
     #
     # Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/schools/2
 	def delete(self, userId):
-		print("UserId to delete: "+str(userId))
 		# 1. You need to create the stored procedure in MySQLdb (deleteSchool)
-		# 2. You need to write the code here to call the stored procedure
-		# 3. What should/could the response code be? How to return it?
-		# 4. Anytime you change a database, you ned to commit that change.
-		#       See the POST example for more
-		return
+		try:
+			dbConnection = pymysql.connect(
+				settings.DB_HOST,
+				settings.DB_USER,
+				settings.DB_PASSWD,
+				settings.DB_DATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'deleteUserByID'
+			cursor = dbConnection.cursor()
+			sqlArgs = (userId)
+			cursor.callproc(sql,sqlArgs)
+			row = cursor.fetchone()
+			if row is None:
+				abort(404)
+		except:
+			abort(500)
+		finally:
+			cursor.close()
+			dbConnection.close()
+		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 204)
 ####################################################################################
 #
 # Identify/create endpoints and endpoint objects
