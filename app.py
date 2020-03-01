@@ -158,7 +158,6 @@ class User(Resource):
 			sqlArgs = (userId)
 			cursor.callproc(sql,sqlArgs)
 			print("SchoolId to delete: "+str(schoolId))
-			row = cursor.fetchall()
 			dbConnection.commit()
 		except:
 			abort(500)
