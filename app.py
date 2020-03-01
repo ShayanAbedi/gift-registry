@@ -10,7 +10,7 @@ import cgi
 import sys
 cgitb.enable()
 
-import settings # Our server and db settings, stored in settings.py
+import settings 
 
 app = Flask(__name__, static_url_path='/static')
 api = Api(app)
@@ -30,7 +30,7 @@ def not_found(error):
 
 ####################################################################################
 #
-# Static Endpoints for humans
+# Static Endpoints
 #
 class Root(Resource):
 	def get(self):
@@ -40,7 +40,7 @@ api.add_resource(Root,'/')
 
 ####################################################################################
 #
-# Users routing: GET and POST, individual school access
+# Users routing: GET and POST, individual user access
 #
 class Users(Resource):
     # GET: Return all user resources
@@ -57,14 +57,14 @@ class Users(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getUsers'
 			cursor = dbConnection.cursor()
-			cursor.callproc(sql) # stored procedure, no arguments
-			rows = cursor.fetchall() # get all the results
+			cursor.callproc(sql) 
+			rows = cursor.fetchall()
 		except:
-			abort(500) # Nondescript server error
+			abort(500) 
 		finally:
 			cursor.close()
 			dbConnection.close()
-		return make_response(jsonify({'users': rows}), 200) # turn set into json and return it
+		return make_response(jsonify({'users': rows}), 200)
     
 
 	def post(self):
@@ -72,13 +72,12 @@ class Users(Resource):
         # Sample command line usage:
         #
         # curl -i -X POST -H "Content-Type: application/json"
-        #    -d '{"email": "test@gmail.com", "user_name": "test Adding Users"}'
-        #         http://info3103.cs.unb.ca:41921/users
+        #    -d '{"email": "test@gmail.com", "user_name": "test"}'
+        #         http://info3103.cs.unb.ca:xxxxx/users
 
 		if not request.json or not 'user_name' in request.json:
 			abort(400) # bad request
 
-		# The request object holds the ... wait for it ... client request!
 		# Pull the results out of the json request
 		userName = request.json['user_name']
 		email = request.json['email']
@@ -96,28 +95,25 @@ class Users(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'addUser'
 			cursor = dbConnection.cursor()
-			sqlArgs = (userName, email, img) # Must be a collection
-			cursor.callproc(sql,sqlArgs) # stored procedure, with arguments
+			sqlArgs = (userName, email, img) 
+			cursor.callproc(sql,sqlArgs) 
 			row = cursor.fetchone()
-			dbConnection.commit() # database was modified, commit the changes
+			dbConnection.commit() 
 		except:
-			abort(500) # Nondescript server error
+			abort(500) 
 		finally:
 			cursor.close()
 			dbConnection.close()
    
-		# Look closely, Grasshopper: we just created a new resource, so we're
-		# returning the uri to it, based on the return value from the stored procedure.
-		# Yes, now would be a good time check out the procedure.
 		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
-		return make_response(jsonify( {"URI":uri} ), 201) # successful resource creation
+		return make_response(jsonify( {"URI":uri} ), 201) 
 
 
 class User(Resource):
     # GET: Return identified school resource
 	#
-	# Example request: curl http://info3103.cs.unb.ca:xxxxx/schools/2
+	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/2
 	def get(self, userId):
 		try:
 			dbConnection = pymysql.connect(
@@ -127,23 +123,23 @@ class User(Resource):
 				settings.DB_DATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'getUserByID'
+			sql = 'getUserById'
 			cursor = dbConnection.cursor()
-			sqlArgs = (userId)
-			cursor.callproc(sql,sqlArgs) # stored procedure, no arguments
-			row = cursor.fetchone() # get the single result
+			sqlArgs = (userId,)
+			cursor.callproc(sql,sqlArgs) 
+			row = cursor.fetchone() 
 			if row is None:
 				abort(404)
 		except:
-			abort(500) # Nondescript server error
+			abort(500) 
 		finally:
 			cursor.close()
 			dbConnection.close()
-		return make_response(jsonify({"user": row}), 200) # successful
-
+		return make_response(jsonify({"user": row}), 200)
+ 
     # DELETE: Delete identified school resource
     #
-    # Example request: curl -X DELETE http://info3103.cs.unb.ca:41921/users/2
+    # Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/users/2
 	def delete(self, userId):
 		try:
 			dbConnection = pymysql.connect(
@@ -153,9 +149,9 @@ class User(Resource):
 				settings.DB_DATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'deleteUserByID'
+			sql = 'deleteUserById'
 			cursor = dbConnection.cursor()
-			sqlArgs = (userId)
+			sqlArgs = (userId,)
 			cursor.callproc(sql,sqlArgs)
 			print("UserId to delete: "+str(userId))
 			dbConnection.commit()
@@ -164,7 +160,7 @@ class User(Resource):
 		finally:
 			cursor.close()
 			dbConnection.close()
-		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 204)
+		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 200)
 ####################################################################################
 #
 # Identify/create endpoints and endpoint objects
