@@ -145,7 +145,6 @@ class User(Resource):
     #
     # Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/schools/2
 	def delete(self, userId):
-		# 1. You need to create the stored procedure in MySQLdb (deleteSchool)
 		try:
 			dbConnection = pymysql.connect(
 				settings.DB_HOST,
@@ -158,9 +157,8 @@ class User(Resource):
 			cursor = dbConnection.cursor()
 			sqlArgs = (userId)
 			cursor.callproc(sql,sqlArgs)
-			row = cursor.fetchall()
-			if row is None:
-				abort(404)
+			row = cursor.fetchone()
+			dbConnection.commit()
 		except:
 			abort(500)
 		finally:
