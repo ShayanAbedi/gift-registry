@@ -158,7 +158,7 @@ class User(Resource):
 			cursor = dbConnection.cursor()
 			sqlArgs = (userId)
 			cursor.callproc(sql,sqlArgs)
-			row = cursor.fetchone()
+			row = cursor.fetchall()
 			if row is None:
 				abort(404)
 		except:
