@@ -95,6 +95,7 @@ class SignIn(Resource):
 				ldapConnection.unbind()
 
 		return make_response(jsonify(response), responseCode)
+
 	# GET: Check for a login
 	#
 	# Example curl command:
@@ -109,6 +110,23 @@ class SignIn(Resource):
 			responseCode = 403
 
 		return make_response(jsonify(response), responseCode)
+
+	# DELETE: Logout: remove session
+	#
+	# Example curl command:
+	# curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar
+	#	http://info3103.cs.unb.ca:61340/signin
+	def delete(self):
+		if 'username' in session:
+			session.pop('username', None)
+			response = {'status': 'success'}
+			responseCode = 200
+		else:
+			response = {'status': 'failed'}
+			responseCode = 403
+		return make_response(jsonify(response), responseCode)
+
+
 
 
 
