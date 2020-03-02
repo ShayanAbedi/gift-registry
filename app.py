@@ -95,10 +95,20 @@ class SignIn(Resource):
 				ldapConnection.unbind()
 
 		return make_response(jsonify(response), responseCode)
+	# GET: Check for a login
+	#
+	# Example curl command:
+	# curl -i -H "Content-Type: application/json" -X GET -b cookie-jar
+	#	http://info3103.cs.unb.ca:61340/signin
+	def get(self):
+		if 'username' in session:
+			response = {'status': 'success'}
+			responseCode = 200
+		else:
+			response = {'status': 'fail'}
+			responseCode = 403
 
-
-
-
+		return make_response(jsonify(response), responseCode)
 
 
 
