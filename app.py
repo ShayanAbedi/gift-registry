@@ -114,11 +114,6 @@ class SignIn(Resource):
 
 
 
-
-
-
-
-
 #
 # Users routing: GET and POST, individual user access
 #
@@ -159,7 +154,10 @@ class Users(Resource):
 			abort(400) # bad request
 
 		# Pull the results out of the json request
-		userName = request.json['user_name']
+		if 'username' in session:
+			userName = session['username']
+		else:
+			userName = request.json['user_name']
 		email = request.json['email']
 		if 'img_url' in request.json:
 			img = request.json['img_url']
