@@ -25,7 +25,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_COOKIE_NAME'] = 'peanutButter'
 app.config['SESSION_COOKIE_DOMAIN'] = settings.APP_HOST
 Session(app)
-
+api = Api(app)
 ####################################################################################
 #
 # Error handlers
