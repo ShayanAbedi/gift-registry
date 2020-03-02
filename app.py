@@ -168,14 +168,12 @@ class Users(Resource):
         #    -d '{"email": "test@gmail.com", "user_name": "test"}'
         #         http://info3103.cs.unb.ca:xxxxx/users
 
-		if not request.json or not 'user_name' in request.json:
+		if not request.json or not 'username' in session:
 			abort(400) # bad request
 
 		# Pull the results out of the json request
-		if 'username' in session:
-			userName = session['username']
-		else:
-			userName = request.json['user_name']
+
+		userName = request.json['user_name']
 		email = request.json['email']
 		if 'img_url' in request.json:
 			img = request.json['img_url']
