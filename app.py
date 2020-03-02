@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 
-from flask import Flask, jsonify, abort, request, make_response
-from flask_restful import Resource, Api
+from flask import Flask, jsonify, abort, request, make_response, session
+from flask_restful import Resource, Api, reqparse
+from flask_session import Session
+
+from ldap3 import Server, Connection, ALL
+from ldap3.core.exceptions import *
+
 import pymysql.cursors
 import json
 
@@ -13,8 +18,13 @@ cgitb.enable()
 import settings 
 
 app = Flask(__name__, static_url_path='/static')
-api = Api(app)
 
+
+app.secret_key = settings.SECRET_KEY
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_COOKIE_NAME'] = 'peanutButter'
+app.config['SESSION_COOKIE_DOMAIN'] = settings.APP_HOST
+Session(app)
 
 ####################################################################################
 #
@@ -39,6 +49,66 @@ class Root(Resource):
 api.add_resource(Root,'/')
 
 ####################################################################################
+#
+# Authentication
+#
+class SignIn(Resource):
+	#
+	# Login, start a session and set/return a session cookie
+	#
+	# Example curl command:
+	# curl -i -H "Content-Type: application/json" -X POST -d '{"username": "Casper", "password": "cr*ap"}'
+	#  	-c cookie-jar http://info3103.cs.unb.ca:xxxxx/signin
+	#
+	def post(self):
+		if not request.json:
+			abort(400)
+		parser = reqparse.RequestParser()
+		try:
+			parser.add_argument('username', type=str, required=True)
+			parser.add_argument('password', type=str, required=True)
+			request_params = parser.parse_args()
+		except:
+			abort(400)
+
+		if request_params['username'] in session:
+			response = {'status':'success'}
+			responseCode = 200
+		else:
+			try:
+				ldapServer = Server(host=settings.LDAP_HOST)
+				ldapConnection = Connection(ldapServer,
+					raise_exceptions=True,
+					user='uid='+request_params['username']+', ou=People,ou=fcs,o=unb',
+					password = request_params['password'])
+				ldapConnection.open()
+				ldapConnection.start_tls()
+				ldapConnection.bind()
+				# At this point we have sucessfully authenticated.
+				session['username'] = request_params['username']
+				response = {'status': 'success' }
+				responseCode = 201
+			except (LDAPException, error_message):
+				response = {'status': 'Access denied'}
+				responseCode = 403
+			finally:
+				ldapConnection.unbind()
+
+		return make_response(jsonify(response), responseCode)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #
 # Users routing: GET and POST, individual user access
 #
