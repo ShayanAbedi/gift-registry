@@ -111,7 +111,7 @@ class Users(Resource):
 
 
 class User(Resource):
-    # GET: Return identified school resource
+    # GET: Return identified user resource
 	#
 	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/2
 	def get(self, userId):
@@ -137,6 +137,11 @@ class User(Resource):
 			dbConnection.close()
 		return make_response(jsonify({"user": row}), 200)
 
+    # PUT: Update identified user resource
+    #
+    # Example request: 
+	# curl -X PUT -H "Content-Type: application/json" 
+	# -d '{"user_name":"Shayan Abedi","email":"abedi.shayan@unb.ca"}' http://info3103.cs.unb.ca:xxxx/users/3
 	def put(self, userId):
 		if not request.json:
 			abort(400) # bad request
@@ -172,7 +177,7 @@ class User(Resource):
 		uri = uri+'/users/'+str(userId)
 		return make_response(jsonify( {"URI":uri} ), 200) 
 
-    # DELETE: Delete identified school resource
+    # DELETE: Delete identified user resource
     #
     # Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/users/2
 	def delete(self, userId):
@@ -206,7 +211,5 @@ api.add_resource(User, '/users/<int:userId>')
 
 
 #############################################################################
-# xxxxx= last 5 digits of your studentid. If xxxxx > 65535, subtract 30000
 if __name__ == "__main__":
-#    app.run(host="info3103.cs.unb.ca", port=xxxx, debug=True)
 	app.run(host=settings.APP_HOST, port=settings.APP_PORT, debug=settings.APP_DEBUG)
