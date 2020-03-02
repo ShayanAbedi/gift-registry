@@ -276,6 +276,7 @@ class User(Resource):
 # Identify/create endpoints and endpoint objects
 #
 api = Api(app)
+api.add_resource(SignIn, '/signin')
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:userId>')
 
