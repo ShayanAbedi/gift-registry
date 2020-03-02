@@ -168,7 +168,7 @@ class Users(Resource):
         #    -d '{"email": "test@gmail.com", "user_name": "test"}'
         #         http://info3103.cs.unb.ca:xxxxx/users
 
-		if not request.json or not 'username' in session:
+		if not request.json or not 'user_name' in request.json:
 			abort(400) # bad request
 
 		# Pull the results out of the json request
