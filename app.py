@@ -164,7 +164,7 @@ class Users(Resource):
         #
         # Sample command line usage:
         #
-        # curl -i -X POST -H "Content-Type: application/json"
+        # curl -i -X POST -b cookie-jar -H "Content-Type: application/json"
         #    -d '{"email": "test@gmail.com", "user_name": "test"}'
         #         http://info3103.cs.unb.ca:xxxxx/users
 
@@ -173,7 +173,7 @@ class Users(Resource):
 
 		# Pull the results out of the json request
 
-		userName = request.json['user_name']
+		userName = session['username']
 		email = request.json['email']
 		if 'img_url' in request.json:
 			img = request.json['img_url']
