@@ -6,6 +6,6 @@ CREATE PROCEDURE addPresent(
     )
 BEGIN
     INSERT INTO presents (present_name, link, img_url, user_id) VALUES (name, link, img, id);
-SELECT LAST_INSERT_ID();    
+SELECT LAST_INSERT_ID();
 END //
 DELIMITER ;

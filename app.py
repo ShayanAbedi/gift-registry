@@ -15,7 +15,7 @@ import cgi
 import sys
 cgitb.enable()
 
-import settings 
+import settings
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -150,15 +150,15 @@ class Users(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getUsers'
 			cursor = dbConnection.cursor()
-			cursor.callproc(sql) 
+			cursor.callproc(sql)
 			rows = cursor.fetchall()
 		except:
-			abort(500) 
+			abort(500)
 		finally:
 			cursor.close()
 			dbConnection.close()
 		return make_response(jsonify({'users': rows}), 200)
-    
+
 
 	def post(self):
         #
@@ -179,7 +179,7 @@ class Users(Resource):
 			img = request.json['img_url']
 		else:
 			img = ""
-  
+
 		try:
 			dbConnection = pymysql.connect(settings.DB_HOST,
 				settings.DB_USER,
@@ -189,19 +189,19 @@ class Users(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'addUser'
 			cursor = dbConnection.cursor()
-			sqlArgs = (userName, email, img) 
-			cursor.callproc(sql,sqlArgs) 
+			sqlArgs = (userName, email, img)
+			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
-			dbConnection.commit() 
+			dbConnection.commit()
 		except:
-			abort(500) 
+			abort(500)
 		finally:
 			cursor.close()
 			dbConnection.close()
-   
+
 		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
-		return make_response(jsonify( {"URI":uri} ), 201) 
+		return make_response(jsonify( {"URI":uri} ), 201)
 
 
 class User(Resource):
@@ -220,12 +220,12 @@ class User(Resource):
 			sql = 'getUserById'
 			cursor = dbConnection.cursor()
 			sqlArgs = (userId,)
-			cursor.callproc(sql,sqlArgs) 
-			row = cursor.fetchone() 
+			cursor.callproc(sql,sqlArgs)
+			row = cursor.fetchone()
 			if row is None:
 				abort(404)
 		except:
-			abort(500) 
+			abort(500)
 		finally:
 			cursor.close()
 			dbConnection.close()
@@ -233,9 +233,8 @@ class User(Resource):
 
     # PUT: Update identified user resource
     #
-    # Example request: 
-	# curl -X PUT -H "Content-Type: application/json" 
-	# -d '{"user_name":"Shayan Abedi","email":"abedi.shayan@unb.ca"}' http://info3103.cs.unb.ca:xxxx/users/3
+    # Example request:
+	#curl -X PUT -H "Content-Type: application/json" -d '{"user_name":"Shayan Abedi","email":"abedi.shayan@unb.ca"}' http://info3103.cs.unb.ca:41921/users/1
 	def put(self, userId):
 		if not request.json:
 			abort(400) # bad request
@@ -247,7 +246,7 @@ class User(Resource):
 			img = request.json['img_url']
 		else:
 			img = ""
-  
+
 		try:
 			dbConnection = pymysql.connect(settings.DB_HOST,
 				settings.DB_USER,
@@ -257,23 +256,23 @@ class User(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'updateUser'
 			cursor = dbConnection.cursor()
-			sqlArgs = (userId, userName, email, img) 
-			cursor.callproc(sql,sqlArgs) 
+			sqlArgs = (userId, userName, email, img)
+			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
-			dbConnection.commit() 
+			dbConnection.commit()
 		except:
-			abort(500) 
+			abort(500)
 		finally:
 			cursor.close()
 			dbConnection.close()
-   
+
 		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+'/users/'+str(userId)
-		return make_response(jsonify( {"URI":uri} ), 200) 
+		return make_response(jsonify( {"URI":uri} ), 200)
 
     # DELETE: Delete identified user resource
     #
-    # Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/users/2
+     #Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/users/2
 	def delete(self, userId):
 		try:
 			dbConnection = pymysql.connect(
@@ -295,6 +294,164 @@ class User(Resource):
 			cursor.close()
 			dbConnection.close()
 		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 200)
+
+#
+# Presents routing: GET and POST, individual present access
+#
+class Presents(Resource):
+    # GET: Return all present resources
+	#
+	# Example request: curl http://info3103.cs.unb.ca:xxxxx/presents
+	def get(self, userId):
+		try:
+			dbConnection = pymysql.connect(
+				settings.DB_HOST,
+				settings.DB_USER,
+				settings.DB_PASSWD,
+				settings.DB_DATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'getPresents'
+			cursor = dbConnection.cursor()
+			cursor.callproc(sql)
+			rows = cursor.fetchall()
+		except:
+			abort(500)
+		finally:
+			cursor.close()
+			dbConnection.close()
+		return make_response(jsonify({'presents': rows}), 200)
+
+	def post(self,userId):
+	#
+	# Sample command line usage:
+	#
+	# curl -i -X POST -b cookie-jar -H "Content-Type: application/json"
+	#    -d '{"email": "test@gmail.com", "user_name": "test"}'
+	#        http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents
+
+		if not request.json:
+			abort(400) # bad request
+
+	# Pull the results out of the json request
+		presentName = request.json['present_name']
+		link = request.json['link']
+		if 'img_url' in request.json:
+			img = request.json['img_url']
+		else:
+			img = ""
+		userId = request.json['user_id']
+
+
+		try:
+			dbConnection = pymysql.connect(settings.DB_HOST,
+				settings.DB_USER,
+				settings.DB_PASSWD,
+				settings.DB_DATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'addPresent'
+			cursor = dbConnection.cursor()
+			sqlArgs = (presentName, link, img, userId)
+			cursor.callproc(sql,sqlArgs)
+			row = cursor.fetchone()
+			dbConnection.commit()
+		except:
+			abort(500)
+		finally:
+			cursor.close()
+			dbConnection.close()
+
+		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
+		return make_response(jsonify( {"URI":uri} ), 201)
+
+class Present(Resource):
+	def get(self, userId, presentId):
+		try:
+			dbConnection = pymysql.connect(
+				settings.DB_HOST,
+				settings.DB_USER,
+				settings.DB_PASSWD,
+				settings.DB_DATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'getPresentById'
+			cursor = dbConnection.cursor()
+			sqlArgs = (presentId,)
+			cursor.callproc(sql,sqlArgs)
+			row = cursor.fetchone()
+			if row is None:
+				abort(404)
+		except:
+			abort(500)
+		finally:
+			cursor.close()
+			dbConnection.close()
+		return make_response(jsonify({"present": row}), 200)
+
+
+
+	def delete(self, userId, presentId):
+		try:
+			dbConnection = pymysql.connect(
+				settings.DB_HOST,
+				settings.DB_USER,
+				settings.DB_PASSWD,
+				settings.DB_DATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'deletePresent'
+			cursor = dbConnection.cursor()
+			sqlArgs = (presentId,)
+			cursor.callproc(sql,sqlArgs)
+			print("presentID to delete: "+str(presentId))
+			dbConnection.commit()
+		except:
+			abort(500)
+		finally:
+			cursor.close()
+			dbConnection.close()
+		return make_response(jsonify({"message": "The present and  successfully deleted"}), 200)
+
+
+		#curl -X PUT -H "Content-Type: application/json" -d '{"present_id":"2", "present_name":"Macbook Pro","link":"http://www.apple.ca", "img_url" : "test"}' http://info3103.cs.unb.ca:41921/users/1
+	def put(self, userId, presentId):
+		if not request.json:
+			abort(400) # bad request
+
+		# Pull the results out of the json request
+		presentName = request.json['present_name']
+		link = request.json['link']
+		if 'img_url' in request.json:
+			img = request.json['img_url']
+		else:
+			img = ""
+		
+
+		try:
+			dbConnection = pymysql.connect(settings.DB_HOST,
+				settings.DB_USER,
+				settings.DB_PASSWD,
+				settings.DB_DATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'updatePresent'
+			cursor = dbConnection.cursor()
+			sqlArgs = (presentId, presentName, link, img)
+			cursor.callproc(sql,sqlArgs)
+			row = cursor.fetchone()
+			dbConnection.commit()
+		except:
+			abort(500)
+		finally:
+			cursor.close()
+			dbConnection.close()
+
+		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = uri+'/users/'+str(userId)+'/presents/'+str(presentId)
+		return make_response(jsonify( {"URI":uri} ), 200)
+
 ####################################################################################
 #
 # Identify/create endpoints and endpoint objects
@@ -303,6 +460,8 @@ api = Api(app)
 api.add_resource(SignIn, '/signin')
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:userId>')
+api.add_resource(Presents,'/users/<int:userId>/presents')
+api.add_resource(Present,'/users/<int:userId>/presents/<int:presentId>')
 
 
 #############################################################################
