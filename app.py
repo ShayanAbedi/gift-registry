@@ -302,7 +302,7 @@ class Presents(Resource):
     # GET: Return all present resources
 	#
 	# Example request: curl http://info3103.cs.unb.ca:xxxxx/presents
-	def get(self, userId):
+	def get(self):
 		try:
 			dbConnection = pymysql.connect(
 				settings.DB_HOST,
@@ -321,6 +321,36 @@ class Presents(Resource):
 			cursor.close()
 			dbConnection.close()
 		return make_response(jsonify({'presents': rows}), 200)
+
+	# GET: Return all present resources belong to a specific user 
+	#
+	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/2/presents
+	def get(self, userId):
+		try:
+			dbConnection = pymysql.connect(
+				settings.DB_HOST,
+				settings.DB_USER,
+				settings.DB_PASSWD,
+				settings.DB_DATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'getPresentsOfUser'
+			cursor = dbConnection.cursor()
+			sqlArgs = (userId,)
+			cursor.callproc(sql, sqlArgs)
+			rows = cursor.fetchall()
+		except:
+			abort(500)
+		finally:
+			cursor.close()
+			dbConnection.close()
+		return make_response(jsonify({'presents': rows}), 200)
+
+
+
+
+
+
 
 	def post(self,userId):
 	#
@@ -460,6 +490,7 @@ api = Api(app)
 api.add_resource(SignIn, '/signin')
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:userId>')
+api.add_resource(Presents,'/presents')
 api.add_resource(Presents,'/users/<int:userId>/presents')
 api.add_resource(Present,'/users/<int:userId>/presents/<int:presentId>')
 
