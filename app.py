@@ -322,6 +322,8 @@ class Presents(Resource):
 			dbConnection.close()
 		return make_response(jsonify({'presents': rows}), 200)
 
+class UserPresents(Resource):
+
 	# GET: Return all present resources belong to a specific user 
 	#
 	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/2/presents
@@ -491,7 +493,7 @@ api.add_resource(SignIn, '/signin')
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:userId>')
 api.add_resource(Presents,'/presents')
-api.add_resource(Presents,'/users/<int:userId>/presents')
+api.add_resource(UserPresents,'/users/<int:userId>/presents')
 api.add_resource(Present,'/users/<int:userId>/presents/<int:presentId>')
 
 
