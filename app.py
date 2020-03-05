@@ -100,7 +100,7 @@ class SignIn(Resource):
 	#
 	# Example curl command:
 	# curl -i -H "Content-Type: application/json" -X GET -b cookie-jar
-	#	http://info3103.cs.unb.ca:61340/signin
+	#	http://info3103.cs.unb.ca:xxxxx/signin
 	def get(self):
 		if 'username' in session:
 			response = {'status': 'success'}
@@ -115,7 +115,7 @@ class SignIn(Resource):
 	#
 	# Example curl command:
 	# curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar
-	#	http://info3103.cs.unb.ca:61340/signin
+	#	http://info3103.cs.unb.ca:xxxxx/signin
 	def delete(self):
 		if 'username' in session:
 			session.pop('username', None)
@@ -207,7 +207,7 @@ class Users(Resource):
 class User(Resource):
     # GET: Return identified user resource
 	#
-	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/2
+	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
 	def get(self, userId):
 		try:
 			dbConnection = pymysql.connect(
@@ -234,7 +234,7 @@ class User(Resource):
     # PUT: Update identified user resource
     #
     # Example request:
-	#curl -X PUT -H "Content-Type: application/json" -d '{"user_name":"Shayan Abedi","email":"abedi.shayan@unb.ca"}' http://info3103.cs.unb.ca:41921/users/1
+	#curl -X PUT -H "Content-Type: application/json" -d '{"user_name":"Shayan Abedi","email":"abedi.shayan@unb.ca"}' http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
 	def put(self, userId):
 		if not request.json:
 			abort(400) # bad request
@@ -272,7 +272,7 @@ class User(Resource):
 
     # DELETE: Delete identified user resource
     #
-     #Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/users/2
+     #Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
 	def delete(self, userId):
 		try:
 			dbConnection = pymysql.connect(
@@ -326,7 +326,7 @@ class UserPresents(Resource):
 
 	# GET: Return all present resources belong to a specific user 
 	#
-	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/2/presents
+	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents
 	def get(self, userId):
 		try:
 			dbConnection = pymysql.connect(
@@ -348,18 +348,12 @@ class UserPresents(Resource):
 			dbConnection.close()
 		return make_response(jsonify({'presents': rows}), 200)
 
-
-
-
-
-
-
 	def post(self,userId):
 	#
 	# Sample command line usage:
 	#
 	# curl -i -X POST -b cookie-jar -H "Content-Type: application/json"
-	#    -d '{"email": "test@gmail.com", "user_name": "test"}'
+	#    -d '{"present_name": "iPhone6s", "link": "www.apple.ca", "img_url":"test.png"}'
 	#        http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents
 
 		if not request.json:
@@ -399,6 +393,9 @@ class UserPresents(Resource):
 		return make_response(jsonify( {"URI":uri} ), 201)
 
 class Present(Resource):
+	# GET: Return a resource belong to a specific user 
+	#
+	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
 	def get(self, userId, presentId):
 		try:
 			dbConnection = pymysql.connect(
