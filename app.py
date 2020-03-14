@@ -193,6 +193,7 @@ class Users(Resource):
 			row = cursor.fetchone()
 
 			# check to see if the username already exists in db
+			print(row);
 			if row != None :
 				return make_response(jsonify({"message": "User already exists"}), 409)
 				cursor.close()
