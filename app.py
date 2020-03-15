@@ -193,33 +193,33 @@ class Users(Resource):
 		row = cursor.fetchone()
 
 		# check to see if the username already exists in db
-		print(row);
 		if row != None :
 			return make_response(jsonify({"message": "User already exists"}), 409)
 			cursor.close()
 			dbConnection.close()
 		else:
-			try:
-				dbConnection = pymysql.connect(settings.DB_HOST,
-					settings.DB_USER,
-					settings.DB_PASSWD,
-					settings.DB_DATABASE,
-					charset='utf8mb4',
-					cursorclass= pymysql.cursors.DictCursor)
-				sql = 'addUser'
-				cursor = dbConnection.cursor()
-				sqlArgs = (userName, email, img)
-				cursor.callproc(sql,sqlArgs)
-				row = cursor.fetchone()
-				dbConnection.commit()
-			except:
-				abort(500)
-			finally:
-				cursor.close()
-				dbConnection.close()
-			uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
-			uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
-			return make_response(jsonify( {"URI":uri} ), 201)
+			return make_response(jsonify({"message": "Success"}), 200)
+			# try:
+			# 	dbConnection = pymysql.connect(settings.DB_HOST,
+			# 		settings.DB_USER,
+			# 		settings.DB_PASSWD,
+			# 		settings.DB_DATABASE,
+			# 		charset='utf8mb4',
+			# 		cursorclass= pymysql.cursors.DictCursor)
+			# 	sql = 'addUser'
+			# 	cursor = dbConnection.cursor()
+			# 	sqlArgs = (userName, email, img)
+			# 	cursor.callproc(sql,sqlArgs)
+			# 	row = cursor.fetchone()
+			# 	dbConnection.commit()
+			# except:
+			# 	abort(500)
+			# finally:
+			# 	cursor.close()
+			# 	dbConnection.close()
+			# uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+			# uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
+			# return make_response(jsonify( {"URI":uri} ), 201)
 
 
 class User(Resource):
