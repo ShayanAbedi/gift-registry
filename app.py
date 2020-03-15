@@ -198,28 +198,27 @@ class Users(Resource):
 			cursor.close()
 			dbConnection.close()
 		else:
-			return make_response(jsonify({"message": "Success"}), 200)
-			# try:
-			# 	dbConnection = pymysql.connect(settings.DB_HOST,
-			# 		settings.DB_USER,
-			# 		settings.DB_PASSWD,
-			# 		settings.DB_DATABASE,
-			# 		charset='utf8mb4',
-			# 		cursorclass= pymysql.cursors.DictCursor)
-			# 	sql = 'addUser'
-			# 	cursor = dbConnection.cursor()
-			# 	sqlArgs = (userName, email, img)
-			# 	cursor.callproc(sql,sqlArgs)
-			# 	row = cursor.fetchone()
-			# 	dbConnection.commit()
-			# except:
-			# 	abort(500)
-			# finally:
-			# 	cursor.close()
-			# 	dbConnection.close()
-			# uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
-			# uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
-			# return make_response(jsonify( {"URI":uri} ), 201)
+			try:
+				dbConnection = pymysql.connect(settings.DB_HOST,
+					settings.DB_USER,
+					settings.DB_PASSWD,
+					settings.DB_DATABASE,
+					charset='utf8mb4',
+					cursorclass= pymysql.cursors.DictCursor)
+				sql = 'addUser'
+				cursor = dbConnection.cursor()
+				sqlArgs = (userName, email, img)
+				cursor.callproc(sql,sqlArgs)
+				row = cursor.fetchone()
+				dbConnection.commit()
+			except:
+				abort(500)
+			finally:
+				cursor.close()
+				dbConnection.close()
+			uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+			uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
+			return make_response(jsonify( {"URI":uri} ), 201)
 
 
 class User(Resource):
@@ -376,7 +375,7 @@ class UserPresents(Resource):
 
 		if not request.json:
 			abort(400) # bad request
-
+   
 	# Pull the results out of the json request
 		presentName = request.json['present_name']
 		link = request.json['link']
@@ -386,6 +385,8 @@ class UserPresents(Resource):
 			img = ""
 		userId = request.json['user_id']
 
+		if 'username' in session == user_name #have to create a procedure to get the 
+											  #username(in session) and return the user_id 
 
 		try:
 			dbConnection = pymysql.connect(settings.DB_HOST,
