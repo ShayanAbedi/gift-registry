@@ -12,18 +12,20 @@ baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
           application/json:
             example:
               {
-                "users":[
-                  {
-                    "user_id": "1",
-                    "user_name": "Shayan Abedi",
-                    "email": "abedi.shayan@unb.ca"
-                  },
-                  {
-                    "user_id": "2",
-                    "user_name": "Austin Fraser",
-                    "email": "afraser6@unb.ca"
-                  }
-                ]
+              "users": [
+                {
+                  "email": "abedi.shayan@unb.ca",
+                  "img_url": "",
+                  "user_id": 6,
+                  "user_name": "Sabedi1"
+                },
+                {
+                  "email": "jack@unb.ca",
+                  "img_url": "",
+                  "user_id": 7,
+                  "user_name": "Jack"
+                }
+              ]
               }
       500:
   post:
@@ -44,9 +46,13 @@ baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
         body:
           application/json:
             example:
-              {"message": "The user has been properly entered to the collection",
-              "resource_url":  "/users/{userId}"}
-      400:
+              {"resource_url":  "/users/{userId}"}
+      409:
+        body:
+          application/json:
+            example:
+              {"message": "User already exists"}
+      500:
   /{userId}:
     get:
       description: Retrieve a specific user with `userId = {userId}`.
@@ -63,12 +69,10 @@ baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
 									}
 								}
         404:
-          body:
-            application/json:
-              example:
-                {"message": "User not exists with a given user id."}
+        500:
+        
     put:
-      description: Edit user's informations (name and email).
+      description: Edit user's informations (email, img_url).
       responses:
         204:
       queryParameters:

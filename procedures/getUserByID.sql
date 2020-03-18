@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS getUserById //
 
 CREATE PROCEDURE getUserById(IN userIdIn int)
 BEGIN
-   SELECT * 
+   SELECT user_name
       FROM users
       WHERE user_id = userIdIn;
 END//

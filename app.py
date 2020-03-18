@@ -251,13 +251,14 @@ class User(Resource):
     # PUT: Update identified user resource
     #
     # Example request:
-	#curl -X PUT -H "Content-Type: application/json" -d '{"user_name":"Shayan Abedi","email":"abedi.shayan@unb.ca"}' http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
+	#curl -X PUT -H "Content-Type: application/json" -d 
+	# '{"email":"test@unb.ca", "img_url":"test.ca"}' 
+	# http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
 	def put(self, userId):
 		if not request.json:
 			abort(400) # bad request
 
 		# Pull the results out of the json request
-		userName = request.json['user_name']
 		email = request.json['email']
 		if 'img_url' in request.json:
 			img = request.json['img_url']
@@ -273,7 +274,7 @@ class User(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'updateUser'
 			cursor = dbConnection.cursor()
-			sqlArgs = (userId, userName, email, img)
+			sqlArgs = (userId, email, img)
 			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
 			dbConnection.commit()
@@ -285,32 +286,8 @@ class User(Resource):
 
 		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+'/users/'+str(userId)
-		return make_response(jsonify( {"URI":uri} ), 200)
+		return make_response(jsonify( {"URI":uri} ), 204)
 
-    # DELETE: Delete identified user resource
-    #
-     #Example request: curl -X DELETE http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
-	def delete(self, userId):
-		try:
-			dbConnection = pymysql.connect(
-				settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
-				charset='utf8mb4',
-				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'deleteUserById'
-			cursor = dbConnection.cursor()
-			sqlArgs = (userId,)
-			cursor.callproc(sql,sqlArgs)
-			print("UserId to delete: "+str(userId))
-			dbConnection.commit()
-		except:
-			abort(500)
-		finally:
-			cursor.close()
-			dbConnection.close()
-		return make_response(jsonify({"message": "The user and its present list successfully deleted"}), 200)
 
 #
 # Presents routing: GET and POST, individual present access
@@ -383,11 +360,7 @@ class UserPresents(Resource):
 			img = request.json['img_url']
 		else:
 			img = ""
-		userId = request.json['user_id']
-
-		if 'username' in session == user_name #have to create a procedure to get the 
-											  #username(in session) and return the user_id 
-
+		
 		try:
 			dbConnection = pymysql.connect(settings.DB_HOST,
 				settings.DB_USER,
@@ -395,12 +368,25 @@ class UserPresents(Resource):
 				settings.DB_DATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'addPresent'
+			sql = 'getUserById'
 			cursor = dbConnection.cursor()
-			sqlArgs = (presentName, link, img, userId)
+			sqlArgs = (userId,)
 			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
-			dbConnection.commit()
+			# check if the user authorized to post to the present list
+			if row["user_name"] == session['username']:
+				try:
+					sql1 = 'addPresent'
+					cursor = dbConnection.cursor()
+					sqlArgs = (presentName, link, img, userId)
+					cursor.callproc(sql1,sqlArgs)
+					row = cursor.fetchone()
+					dbConnection.commit()
+				except:
+					abort(500)
+			else:
+				return make_response(jsonify({'message': "You are not authorized to add to this present list"}), 405)
+			
 		except:
 			abort(500)
 		finally:
@@ -424,9 +410,9 @@ class Present(Resource):
 				settings.DB_DATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'getPresentById'
+			sql = 'getPresentByIdOfUser'
 			cursor = dbConnection.cursor()
-			sqlArgs = (presentId,)
+			sqlArgs = (userId, presentId)
 			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
 			if row is None:
@@ -439,7 +425,9 @@ class Present(Resource):
 		return make_response(jsonify({"present": row}), 200)
 
 
-
+	# Example curl command:
+	# curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar
+	#	http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
 	def delete(self, userId, presentId):
 		try:
 			dbConnection = pymysql.connect(
@@ -449,21 +437,36 @@ class Present(Resource):
 				settings.DB_DATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'deletePresent'
+			sql = 'getUserById'
 			cursor = dbConnection.cursor()
-			sqlArgs = (presentId,)
+			sqlArgs = (userId,)
 			cursor.callproc(sql,sqlArgs)
-			print("presentID to delete: "+str(presentId))
-			dbConnection.commit()
+			row = cursor.fetchone()
+			# check if the user authorized to delete the present
+			if row["user_name"] == session['username']:
+				try:
+					sql1 = 'deletePresent'
+					cursor = dbConnection.cursor()
+					sqlArgs = (presentId,)
+					cursor.callproc(sql1,sqlArgs)
+					dbConnection.commit()
+				except:
+					abort(500)
+				return make_response(jsonify({"message": "The present successfully deleted"}), 200)
+			else:
+				return make_response(jsonify({'message': "You are not authorized to delete this present"}), 405)
 		except:
 			abort(500)
 		finally:
 			cursor.close()
 			dbConnection.close()
-		return make_response(jsonify({"message": "The present and  successfully deleted"}), 200)
-
-
-		#curl -X PUT -H "Content-Type: application/json" -d '{"present_id":"2", "present_name":"Macbook Pro","link":"http://www.apple.ca", "img_url" : "test"}' http://info3103.cs.unb.ca:41921/users/1
+		
+ 	# PUT: Update specific present
+    #
+    # Example request:
+	# curl -X PUT -H "Content-Type: application/json" -d 
+	# '{"present_name":"iPhone6s","link":"www.apple.ca"}' 
+	#  -b cookie-jar http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
 	def put(self, userId, presentId):
 		if not request.json:
 			abort(400) # bad request
@@ -484,12 +487,21 @@ class Present(Resource):
 				settings.DB_DATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'updatePresent'
+			sql = 'getUserById'
 			cursor = dbConnection.cursor()
-			sqlArgs = (presentId, presentName, link, img)
+			sqlArgs = (userId,)
 			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
-			dbConnection.commit()
+			# check if the user authorized to update the present
+			if row["user_name"] == session['username']:
+				sql1 = 'updatePresent'
+				cursor = dbConnection.cursor()
+				sqlArgs = (presentId, presentName, link, img)
+				cursor.callproc(sql1,sqlArgs)
+				row = cursor.fetchone()
+				dbConnection.commit()
+			else:
+				return make_response(jsonify({'message': "You are not authorized to edit this present"}), 405)
 		except:
 			abort(500)
 		finally:
