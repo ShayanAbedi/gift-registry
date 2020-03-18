@@ -1,7 +1,73 @@
 #%RAML 1.0
 title: giftRegistry API
 version: v1
-baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
+baseUri: http://info3103.cs.unb.ca:xxxxx
+
+/signin:
+  get:
+    description: Check if the users logged in
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "status": "success"
+              }
+      403:
+        body:
+          application/json:
+            example:
+              {
+                "status":"fail"
+              }
+  post:
+    description: Login using ldap
+    queryParameters:
+      username:
+        required: true,
+        type: string
+      password:
+        required: true,
+        type: string
+    responses:
+      200:
+        body:
+          application/json:
+            example: {
+              "status": "success"
+              }
+      201:
+        body:
+          application/json:
+            example: {
+              "status": "success"
+              }
+      403:
+        body:
+          application/json:
+            example: {
+              "status": "Access denied"
+              }
+  delete:
+    description: Logout user by deleting the username in session
+    responses:
+      200:
+        body:
+          application/json:
+            example: {
+              "status": "success"
+              }
+      403:
+        body:
+          application/json:
+            example: {
+              "status": "failed"
+              }
+
+
+
+
 
 /users:
   get:
@@ -52,6 +118,7 @@ baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
           application/json:
             example:
               {"message": "User already exists"}
+      400:
       500:
   /{userId}:
     get:
@@ -70,50 +137,81 @@ baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
 								}
         404:
         500:
-        
     put:
       description: Edit user's informations (email, img_url).
-      responses:
-        204:
       queryParameters:
         access_token:
           description: "The access token provided by the authentication application"
           required: true
           type: string
-    delete:
-      description: Delete a user.
       responses:
         204:
-      queryParameters:
-        access_token:
-          description: "The access token provided by the authentication application"
-          required: true
-          type: string
-    /presents:
+          body:
+            application/json:
+              example:
+                {"resource_url":  "/users/{userId}"}
+        400:
+        500:
+
+/presents:
+    get:
+      description: Retrieve the whole present list.
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+									"presents":[
+                  {
+                    "img_url": "",
+                    "link": "www.amazon.ca",
+                    "present_id": 3,
+                    "present_name": "keyboard",
+                    "submission_date": "Tue, 17 Mar 2020 19:15:06 GMT",
+                    "user_id": 7
+                  },
+                  {
+                    "img_url": "",
+                    "link": "www.apple.ca",
+                    "present_id": 4,
+                    "present_name": "MacbookAir",
+                    "submission_date": "Tue, 17 Mar 2020 19:15:42 GMT",
+                    "user_id": 7
+                  }
+									]
+								}
+        500:
+/users/{userId}/presents:
       get:
-        description: Retrieve a specific user's present list.
+        description: Retrieve a specific's list belong to a specific user
         responses:
           200:
             body:
               application/json:
                 example:
                   {
-										"presents":[
-											{
-												"present_id": "1",
-												"present_name": "Computer keyboard",
-												"link": "https://www.amazon.com/dp/B078FGHZQ8/ref=cm_sw_em_r_mt_dp_U_2IatEbF5MCM3P",
-												"user_id":"1"
-											},
-											{
-												"present_id": "2",
-												"present_name": "Computer mouse",
-												"link": "https://www.amazon.com/dp/B013WC0P2A/ref=cm_sw_em_r_mt_dp_U_ILatEb9NJEZMM",
-												"user_id":"1"
-											}
-										]
-									}
+                  "presents": [
+                    {
+                      "img_url": "",
+                      "link": "www.apple.ca",
+                      "present_id": 5,
+                      "present_name": "MacBookAir",
+                      "submission_date": "Tue, 17 Mar 2020 19:15:52 GMT",
+                      "user_id": 6
+                    },
+                    {
+                      "img_url": "",
+                      "link": "www.apple.ca",
+                      "present_id": 6,
+                      "present_name": "iPhoneXs",
+                      "submission_date": "Tue, 17 Mar 2020 20:48:38 GMT",
+                      "user_id": 6
+                    }
+                    ]
+                  }
           500:
+
       post:
         description: Add a new present to the user's present list.
         queryParameters:
@@ -134,7 +232,13 @@ baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
                 example:
                   {"message": "The present has been properly entered to the presents collection",
                    "resource_url":  "/users/{userId}/presents/{presentId}"}
+          405:
+            body:
+              application/json:
+                example:
+                  {'message': "You are not authorized to add to this present list"}
           400:
+          500:
       /{presentId}:
         get:
           description: Retrieve a specific present with `presentId = {presentId}`.
@@ -143,34 +247,56 @@ baseUri: http://info3103.cs.unb.ca/sabedi1/app.py
               body:
                 application/json:
                   example:
-                    {
-                      {
-                        "present_id": "1",
-                        "present_name": "Computer keyboard",
-                        "link": "https://www.amazon.com/dp/B078FGHZQ8/ref=cm_sw_em_r_mt_dp_U_2IatEbF5MCM3P",
-                        "user_id": "1"
-                      }
+                  {
+                    "present": {
+                      "img_url": "",
+                      "link": "www.apple.ca",
+                      "present_id": 6,
+                      "present_name": "iPhoneXs",
+                      "submission_date": "Tue, 17 Mar 2020 20:48:38 GMT",
+                      "user_id": 6
+                    }
                   }
             404:
+            500:
+        put:
+          description: Edit present's informations (name and link).
+          queryParameters:
+            access_token:
+              description: "The access token provided by the authentication application"
+              required: true
+              type: string
+          responses:
+            204:
               body:
                 application/json:
                   example:
-                    {"message": "Present not exists with a given present id."}
-        put:
-          description: Edit present's informations (name and link).
-          responses:
-            204:
-          queryParameters:
-            access_token:
-              description: "The access token provided by the authentication application"
-              required: true
-              type: string
+                    {"resource_url":  "/users/{userId}"}
+            405:
+              body:
+                application/json:
+                  example:
+                    {"message": "You are not authorized to edit this present"}
+            500:
+
+
         delete:
           description: Delete a present.
-          responses:
-            204:
           queryParameters:
             access_token:
               description: "The access token provided by the authentication application"
               required: true
               type: string
+          responses:
+            204:
+              body:
+                application/json:
+                  example:
+                    {"message": "The present successfully deleted"}
+            405:
+              body:
+                application/json:
+                  example:
+                    {"message": "You are not authorized to edit this present"}
+
+            500:

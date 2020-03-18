@@ -99,7 +99,7 @@ class SignIn(Resource):
 	# GET: Check for a login
 	#
 	# Example curl command:
-	# curl -i -H "Content-Type: application/json" -X GET -b cookie-jar
+	#   curl -i -H "Content-Type: application/json" -X GET -b cookie-jar
 	#	http://info3103.cs.unb.ca:xxxxx/signin
 	def get(self):
 		if 'username' in session:
@@ -342,14 +342,13 @@ class UserPresents(Resource):
 			dbConnection.close()
 		return make_response(jsonify({'presents': rows}), 200)
 
-	def post(self,userId):
 	#
 	# Sample command line usage:
 	#
 	# curl -i -X POST -b cookie-jar -H "Content-Type: application/json"
 	#    -d '{"present_name": "iPhone6s", "link": "www.apple.ca", "img_url":"test.png"}'
 	#        http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents
-
+	def post(self,userId):
 		if not request.json:
 			abort(400) # bad request
    
@@ -452,7 +451,7 @@ class Present(Resource):
 					dbConnection.commit()
 				except:
 					abort(500)
-				return make_response(jsonify({"message": "The present successfully deleted"}), 200)
+				return make_response(jsonify({"message": "The present successfully deleted"}), 204)
 			else:
 				return make_response(jsonify({'message': "You are not authorized to delete this present"}), 405)
 		except:
@@ -510,7 +509,7 @@ class Present(Resource):
 
 		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+'/users/'+str(userId)+'/presents/'+str(presentId)
-		return make_response(jsonify( {"URI":uri} ), 200)
+		return make_response(jsonify( {"URI":uri} ), 204)
 
 ####################################################################################
 #
