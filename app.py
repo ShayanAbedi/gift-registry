@@ -191,7 +191,6 @@ class Users(Resource):
 		sqlArgs = (userName,)
 		cursor.callproc(sql,sqlArgs)
 		row = cursor.fetchone()
-
 		# check to see if the username already exists in db
 		if row != None :
 			return make_response(jsonify({"message": "User already exists"}), 409)
@@ -234,7 +233,7 @@ class User(Resource):
 				settings.DB_DATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'getUserById'
+			sql = 'getUserInfo'
 			cursor = dbConnection.cursor()
 			sqlArgs = (userId,)
 			cursor.callproc(sql,sqlArgs)

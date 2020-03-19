@@ -1,0 +1,41 @@
+Test cases:
+    curl -i -H "Content-Type: application/json" -X POST -d '{"username": "", "password": ""}'
+	    -c cookie-jar http://info3103.cs.unb.ca:xxxxx/signin
+
+    curl -i -H "Content-Type: application/json" -X GET -b cookie-jar
+	    http://info3103.cs.unb.ca:xxxxx/signin
+
+    curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar
+	    http://info3103.cs.unb.ca:xxxxx/signin
+
+    curl http://info3103.cs.unb.ca:xxxxx/users
+
+    curl -i -X POST -b cookie-jar -H "Content-Type: application/json"
+        -d '{"email": "test@gmail.com", "img_url":"test"}'
+        http://info3103.cs.unb.ca:xxxxx/users
+
+    curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
+
+    curl -X PUT -H "Content-Type: application/json" -d 
+        '{"email":"test@unb.ca", "img_url":"test.ca"}' 
+        http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
+    
+    curl http://info3103.cs.unb.ca:xxxxx/presents
+
+    curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents
+
+    curl -i -X POST -b cookie-jar -H "Content-Type: application/json"
+	    -d '{"present_name": "iPhone6s", "link": "www.apple.ca", "img_url":"test.png"}'
+	    http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents
+
+    curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
+
+    curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar
+	    http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
+    
+    curl -X PUT -H "Content-Type: application/json" -d 
+        '{"present_name":"iPhone6s","link":"www.apple.ca", "img_url":"test"}' 
+        -b cookie-jar http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
+
+
+    
