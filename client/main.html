@@ -1,22 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/cyborg/bootstrap.min.css" rel="stylesheet" integrity="sha384-l7xaoY0cJM4h9xh1RfazbgJVUZvdtyLWPueWNtLAphf/UbBgOVzqbOTogxPwYLHM" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Thambi+2&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/main.css"/>
     <title>Gift Registry</title>
   </head>
   <body>
-    <h1>Welcome to Gift Registry</h1>
+    
+    <div class="container-fluid" id="app">
+      <div v-if="mainPage">
+        <div id="landing-header">
+          <h1>Welcome to GiftRegistry</h1>
+         <a v-on:click="mainPage = false" class="btn btn-lg btn-secondary">CREATE A PRESENT LIST</a>
+         </div>
+         <ul class="background">
+           <li></li>
+         </ul>
+      </div>
+      <div v-if="!mainPage">
+        <nav class="navbar navbar-expand-md navbar-dark bg-light">
+          <div class="container-fluid">
+         <a class="navbar-brand" href="http://info3103.cs.unb.ca:8038/static/main.html" v-on:click="mainPage = true" >GiftRegistry</a>
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+           <span class="navbar-toggler-icon"></span>
+         </button>
+         
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li v-if="!authenticated" class="nav-item">
+                  <a class="nav-link" href="">Login <i class="fas fa-sign-in-alt"></i></a>
+                </li>
+              
+               
+               <li v-if="authenticated" class="nav-item ">
+                 <a class="nav-link" href="#"> <i class="fas fa-user"></i> {{input.username}}</a>
+             </li>
+             <li v-if="authenticated" class="nav-item">
+                 <a class="nav-link" href="">Logout <i class="fas fa-sign-out-alt"></i></a>
+             </li>
+     
+            </ul>
+              <!-- <form  v-if="authenticated" class="form-inline mt-2 mt-md-0"action="/bars" method="GET" class="form-inline" id="bar-search">
+                  <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search..." aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form> -->
+          </div>
+       
+    
+         </div>
+       </nav>
+      <div class="jumbotron">
+        <h1 class="display-3">Welcome to Gift Registry<sup><small>TM</small></sup></sup></h1>
+        <p class="lead">
+          Create Your Present List and View Your Friends' Present Lists
+        </p>
+        <hr class="my-4" />
 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/static/schools.js"></script>
-    <link rel="stylesheet" href="/static/schools.css" />
-  </body>
+        <button type="button" class="btn btn-outline-primary" v-on:click="getPresents()">List presents</button>
+      </div>
+      <div v-if="authenticated">
+        <h1>Welcome!</h1>
+      </div>
+      <div v-if="presentsData != null" class="presentCards">
+        <div v-for="present in presentsData">
+          <div class="card border-primary mb-3" style="max-width: 20rem;">
+            <div class="card-header">{{present.present_name}}</div>
+            <div class="card-body">
+              <h4 class="card-title">{{present.present_name}}</h4>
+              <p class="card-text">Shop <a href="#"></a></p>
+              <small>{{present.submission_date}}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="jumbotron">
+        <h1 class="display-3">Welcome to Gift Registry<sup><small>TM</small></sup></sup></h1>
+        <p class="lead">
+          Create Your Present List and View Your Friends' Present Lists
+        </p>
+        <hr class="my-4" />
+        <p class="lead">
+          <div v-if="!authenticated" class="form-group text-center">
+            <input class="col-4 mx-auto form-control" type="text" name="username" v-model="input.username" placeholder="Username" />
+            <input class="col-4 mx-auto form-control" type="password" name="password" v-model="input.password" placeholder="Password" />
+            <button class="col-4 btn btn-outline-success" type="button" v-on:click="login()">Login</button>
+          </div>
+          <div v-else class="text-center">
+            <button type="button" class="btn btn-outline-danger" v-on:click="logout()">Logout</button>
+         
+          </div>
+        </p>
+      </div> -->
+      </div>
+      
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="./main.js" ></script>
+  
+</body>
 </html>
