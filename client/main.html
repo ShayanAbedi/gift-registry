@@ -28,11 +28,6 @@
          
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
-                <li v-if="!authenticated" class="nav-item">
-                  <a class="nav-link" href="">Login <i class="fas fa-sign-in-alt"></i></a>
-                </li>
-              
-               
                <li v-if="authenticated" class="nav-item ">
                  <a class="nav-link" href="#"> <i class="fas fa-user"></i> {{input.username}}</a>
              </li>
@@ -56,17 +51,17 @@
           Create Your Present List and View Your Friends' Present Lists
         </p>
         <hr class="my-4" />
-
-        <button type="button" class="btn btn-outline-primary" v-on:click="getPresents()">List presents</button>
-      </div>
-      <div v-if="authenticated">
-        <h1>Welcome!</h1>
+        <div v-if="!authenticated" class="form-group text-center">
+          <input class="col-2 mx-auto form-control" type="text" name="username" v-model="input.username" placeholder="Username" />
+          <input class="col-2 mx-auto form-control" type="password" name="password" v-model="input.password" placeholder="Password" />
+          <button class="col-2 btn btn-outline-success" type="button" v-on:click="login()">Login</button>
+        </div>
+        <button v-if="authenticated" type="button" class="btn btn-outline-primary" v-on:click="getPresents()">List presents</button>
       </div>
       <div v-if="presentsData != null" class="presentCards">
+        <div class="row">
         <div v-for="present in presentsData">
-          <div class="container-fluid">
-            <div class="card-columns">
-              <div class="card">
+              <div class="card col-6">
                 <img class="card-img-top" v-bind:src="present.img_url" alt="Card image cap">
                 <div class="card-block">
                   <h4 class="card-title">{{present.present_name}}</h4>
@@ -78,29 +73,15 @@
                 </div>
               </div>
             </div>
-          </div>
-
         </div>
       </div>
-      <!-- <div class="jumbotron">
-        <h1 class="display-3">Welcome to Gift Registry<sup><small>TM</small></sup></sup></h1>
-        <p class="lead">
-          Create Your Present List and View Your Friends' Present Lists
-        </p>
-        <hr class="my-4" />
-        <p class="lead">
-          <div v-if="!authenticated" class="form-group text-center">
-            <input class="col-4 mx-auto form-control" type="text" name="username" v-model="input.username" placeholder="Username" />
-            <input class="col-4 mx-auto form-control" type="password" name="password" v-model="input.password" placeholder="Password" />
-            <button class="col-4 btn btn-outline-success" type="button" v-on:click="login()">Login</button>
-          </div>
-          <div v-else class="text-center">
-            <button type="button" class="btn btn-outline-danger" v-on:click="logout()">Logout</button>
-         
-          </div>
-        </p>
-      </div> -->
+    </div>
+      <div  v-if="loginModal" class="form-group text-center">
+        <input class="col-4 mx-auto form-control" type="text" name="username" v-model="input.username" placeholder="Username" />
+        <input class="col-4 mx-auto form-control" type="password" name="password" v-model="input.password" placeholder="Password" />
+        <button class="col-4 btn btn-outline-success" type="button" v-on:click="login()">Login</button>
       </div>
+
       <modal v-if="editModal" @close="hideModal">
         <!--
           you can use custom content here to overwrite

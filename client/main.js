@@ -9,6 +9,7 @@ var app = new Vue({
   data: {
     serviceURL: 'http://info3103.cs.unb.ca:8038',
     mainPage: true,
+    loginModal: false,
     authenticated: false,
     loggedIn: null,
     presentsData: null,
