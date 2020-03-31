@@ -1,3 +1,7 @@
+Vue.component('modal', {
+  template: '#modal-template'
+});
+
 var app = new Vue({
   el: '#app',
 
@@ -8,9 +12,18 @@ var app = new Vue({
     authenticated: false,
     loggedIn: null,
     presentsData: null,
+    editModal: false,
     input: {
       username: '',
       password: ''
+    },
+    selectedPresent: {
+      present_name: '',
+      link: '',
+      img_url: '',
+      user_name: '',
+      present_id: '',
+      user_id: ''
     }
   },
   methods: {
@@ -60,6 +73,22 @@ var app = new Vue({
           alert('Unable to retrieve the presents back');
           console.log(e);
         });
+    },
+
+    selectPresent(presentId) {
+      this.showModal();
+      for (element in this.presentsData) {
+        if (this.presentsData[element].present_id == presentId) {
+          this.selectedPresent = this.presentsData[element];
+        }
+      }
+    },
+    showModal() {
+      this.editModal = true;
+    },
+
+    hideModal() {
+      this.editModal = false;
     }
   }
   //------- END methods --------

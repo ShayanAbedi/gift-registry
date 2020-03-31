@@ -64,14 +64,22 @@
       </div>
       <div v-if="presentsData != null" class="presentCards">
         <div v-for="present in presentsData">
-          <div class="card border-primary mb-3" style="max-width: 20rem;">
-            <div class="card-header">{{present.present_name}}</div>
-            <div class="card-body">
-              <h4 class="card-title">{{present.present_name}}</h4>
-              <p class="card-text">Shop <a href="#"></a></p>
-              <small>{{present.submission_date}}</small>
+          <div class="container-fluid">
+            <div class="card-columns">
+              <div class="card">
+                <img class="card-img-top" v-bind:src="present.img_url" alt="Card image cap">
+                <div class="card-block">
+                  <h4 class="card-title">{{present.present_name}}</h4>
+                  <p class="card-text">User: {{present.user_name}} <br> <a v-bind:href="present.link">Shop</a></p>
+                  <br>
+                  <button type="button"  v-on:click="selectPresent(present.present_id)" class="btn btn-warning">Edit</button>
+                  <button type="button" v-on:click="deletePresent(present.user_id, present.present_id)" class="btn btn-danger">Delete</button>
+                  <p class="card-text"><small class="text-muted">Submitted on: {{present.submission_date}}</small></p>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
       <!-- <div class="jumbotron">
@@ -93,7 +101,69 @@
         </p>
       </div> -->
       </div>
-      
+      <modal v-if="editModal" @close="hideModal">
+        <!--
+          you can use custom content here to overwrite
+          default content
+        -->
+        <div slot="header" class="modal-header">
+          Edit Present Data
+        </div>
+        <div slot="body">
+          <div class="form-group col-6">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text  modal-prepend">Present Name</span>
+              </div>
+              <input class="col-8 form-control" type="text" v-model="selectedPresent.present_name" placeholder="Present Name" />
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text modal-prepend">Image URL</span>
+              </div>
+              <input class="col-8 form-control" type="text" v-model="selectedPresent.img_url" placeholder="Image URL" />
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text  modal-prepend">Link</span>
+              </div>
+              <input class="col-8 form-control" type="text" v-model="selectedPresent.link" placeholder="Link" />
+            </div>
+          </div>
+        </div>
+        <div slot="footer">
+          <button type="button" class="btn btn-secondary" v-on:click="hideModal()">Close</button>
+        </div>
+      </modal>
+      <script type="text/x-template" id="modal-template">
+        <transition name="modal">
+          <div class="modal-backdrop">
+          <div class="modal">
+            <header class="modal-header">
+              <slot name="header">
+                This is the default tile!
+                <button type="button" class="btn-close" @click="hideModal()">
+                  x
+                </button>
+              </slot>
+            </header>
+            <section class="modal-body">
+              <slot name="body">
+                I'm the default body!
+              </slot>
+             </section>
+             <footer class="modal-footer">
+                <slot name="footer">
+                  I'm the default footer!
+                  <button type="button" class="btn-green" @click="hideModal()">
+                    Close me!
+                  </button>
+                </slot>
+              </footer>
+            </div>
+          </div>
+        </transition>
+      </script>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
