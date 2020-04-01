@@ -16,10 +16,10 @@ Test cases:
 
     curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
 
-    curl -X PUT -H "Content-Type: application/json" -d 
-        '{"email":"test@unb.ca", "img_url":"test.ca"}' 
+    curl -X PUT -H "Content-Type: application/json" -d
+        '{"email":"test@unb.ca", "img_url":"test.ca"}'
         http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
-    
+
     curl http://info3103.cs.unb.ca:xxxxx/presents
 
     curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents
@@ -32,10 +32,7 @@ Test cases:
 
     curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar
 	    http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
-    
-    curl -X PUT -H "Content-Type: application/json" -d 
-        '{"present_name":"iPhone6s","link":"www.apple.ca", "img_url":"test"}' 
+
+    curl -X PUT -H "Content-Type: application/json" -d
+        '{"present_name":"iPhone6s","link":"www.apple.ca", "img_url":"test"}'
         -b cookie-jar http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
-
-
-    

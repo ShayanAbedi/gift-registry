@@ -17,6 +17,8 @@ cgitb.enable()
 
 import settings
 
+import ssl #include ssl libraries
+
 app = Flask(__name__, static_url_path='/static')
 
 
@@ -179,7 +181,7 @@ class Users(Resource):
 			img = request.json['img_url']
 		else:
 			img = ""
-		
+
 		dbConnection = pymysql.connect(settings.DB_HOST,
 			settings.DB_USER,
 			settings.DB_PASSWD,
@@ -250,8 +252,8 @@ class User(Resource):
     # PUT: Update identified user resource
     #
     # Example request:
-	#curl -X PUT -H "Content-Type: application/json" -d 
-	# '{"email":"test@unb.ca", "img_url":"test.ca"}' 
+	#curl -X PUT -H "Content-Type: application/json" -d
+	# '{"email":"test@unb.ca", "img_url":"test.ca"}'
 	# http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
 	def put(self, userId):
 		if not request.json:
@@ -317,7 +319,7 @@ class Presents(Resource):
 
 class UserPresents(Resource):
 
-	# GET: Return all present resources belong to a specific user 
+	# GET: Return all present resources belong to a specific user
 	#
 	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents
 	def get(self, userId):
@@ -350,7 +352,7 @@ class UserPresents(Resource):
 	def post(self,userId):
 		if not request.json:
 			abort(400) # bad request
-   
+
 	# Pull the results out of the json request
 		presentName = request.json['present_name']
 		link = request.json['link']
@@ -358,7 +360,7 @@ class UserPresents(Resource):
 			img = request.json['img_url']
 		else:
 			img = ""
-		
+
 		try:
 			dbConnection = pymysql.connect(settings.DB_HOST,
 				settings.DB_USER,
@@ -384,7 +386,7 @@ class UserPresents(Resource):
 					abort(500)
 			else:
 				return make_response(jsonify({'message': "You are not authorized to add to this present list"}), 405)
-			
+
 		except:
 			abort(500)
 		finally:
@@ -396,7 +398,7 @@ class UserPresents(Resource):
 		return make_response(jsonify( {"URI":uri} ), 201)
 
 class Present(Resource):
-	# GET: Return a resource belong to a specific user 
+	# GET: Return a resource belong to a specific user
 	#
 	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
 	def get(self, userId, presentId):
@@ -458,12 +460,12 @@ class Present(Resource):
 		finally:
 			cursor.close()
 			dbConnection.close()
-		
+
  	# PUT: Update specific present
     #
     # Example request:
-	# curl -X PUT -H "Content-Type: application/json" -d 
-	# '{"present_name":"iPhone6s","link":"www.apple.ca"}' 
+	# curl -X PUT -H "Content-Type: application/json" -d
+	# '{"present_name":"iPhone6s","link":"www.apple.ca"}'
 	#  -b cookie-jar http://info3103.cs.unb.ca:xxxxx/users/<int:userId>/presents/<int:presentId>
 	def put(self, userId, presentId):
 		if not request.json:
@@ -476,7 +478,7 @@ class Present(Resource):
 			img = request.json['img_url']
 		else:
 			img = ""
-		
+
 
 		try:
 			dbConnection = pymysql.connect(settings.DB_HOST,
@@ -525,4 +527,5 @@ api.add_resource(Present,'/users/<int:userId>/presents/<int:presentId>')
 
 #############################################################################
 if __name__ == "__main__":
-	app.run(host=settings.APP_HOST, port=settings.APP_PORT, debug=settings.APP_DEBUG)
+	context = ('cert.pem','key.pem')
+	app.run(host=settings.APP_HOST, port=settings.APP_PORT, debug=settings.APP_DEBUG, ssl_context=context)
