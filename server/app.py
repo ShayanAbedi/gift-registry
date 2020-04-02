@@ -217,7 +217,7 @@ class Users(Resource):
 			finally:
 				cursor.close()
 				dbConnection.close()
-			uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+			uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 			uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
 			return make_response(jsonify( {"URI":uri} ), 201)
 
@@ -285,7 +285,7 @@ class User(Resource):
 			cursor.close()
 			dbConnection.close()
 
-		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+'/users/'+str(userId)
 		return make_response(jsonify( {"URI":uri} ), 204)
 
@@ -393,7 +393,7 @@ class UserPresents(Resource):
 			cursor.close()
 			dbConnection.close()
 
-		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
 		return make_response(jsonify( {"URI":uri} ), 201)
 
@@ -508,7 +508,7 @@ class Present(Resource):
 			cursor.close()
 			dbConnection.close()
 
-		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+'/users/'+str(userId)+'/presents/'+str(presentId)
 		return make_response(jsonify( {"URI":uri} ), 204)
 
