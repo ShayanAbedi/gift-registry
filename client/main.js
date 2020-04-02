@@ -76,6 +76,27 @@ var app = new Vue({
         });
     },
 
+    deletePresent(userId, presentId) {
+      axios
+        .delete(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
+        .then(response => {
+          axios
+            .get(this.serviceURL + '/presents')
+            .then(response => {
+              this.presentsData = response.data.presents;
+            })
+            .catch(e => {
+              alert('Unable to retrieve the presents back');
+              console.log(e);
+            });
+          alert("deleted present with ID: " + presentId);
+        })
+        .catch(e => {
+          alert('Unable to delete present: ' + presentId);
+          console.log(e);
+        });
+    },
+
     selectPresent(presentId) {
       this.showModal();
       for (element in this.presentsData) {
@@ -84,6 +105,11 @@ var app = new Vue({
         }
       }
     },
+
+    updatePresent(){
+
+    },
+    
     showModal() {
       this.editModal = true;
     },
