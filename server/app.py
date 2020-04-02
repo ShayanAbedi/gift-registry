@@ -496,7 +496,7 @@ class Present(Resource):
 			if row["user_name"] == session['username']:
 				sql1 = 'updatePresent'
 				cursor = dbConnection.cursor()
-				sqlArgs = (presentId, presentName, link, img)
+				sqlArgs = (presentId, presentName, link, img,)
 				cursor.callproc(sql1,sqlArgs)
 				row = cursor.fetchone()
 				dbConnection.commit()

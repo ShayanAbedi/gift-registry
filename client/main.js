@@ -112,14 +112,18 @@ var app = new Vue({
       }
     },
 
-    updatePresent(userId, presentId, updatedPresent){
+    updatePresent(userId, presentId){
       axios
-        .update(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
+        .put(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
         .then(response => {
-
+          present_id = presentId;
+          present_name = this.input.pn;
+          link = this.input.lnk;
+          img_url = this.input.img;
         })
-        .catch({
-
+        .catch(e => {
+          console.log(e.response);
+          alert('Unable to modufy db');
         });
     },
 
@@ -127,7 +131,8 @@ var app = new Vue({
       this.editModal = true;
     },
 
-    hideModal() {
+    hideModal(userId,presentId) {
+      this.updatePresent(userId,presentId);
       this.editModal = false;
     }
   }

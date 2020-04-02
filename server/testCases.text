@@ -8,7 +8,7 @@ Test cases:
     curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar
 	    https://info3103.cs.unb.ca:xxxxx/signin
 
-    curl https://info3103.cs.unb.ca:xxxxx/users
+    curl https://info3103.cs.unb.ca:8004/users
 
     curl -i -X POST -b cookie-jar -H "Content-Type: application/json"
         -d '{"email": "test@gmail.com", "img_url":"test"}'
