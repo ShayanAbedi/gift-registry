@@ -76,6 +76,12 @@ var app = new Vue({
         });
     },
 
+    /*addPresent(presentId){
+      axios
+      .post(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
+
+    },*/
+
     deletePresent(userId, presentId) {
       axios
         .delete(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
@@ -106,10 +112,17 @@ var app = new Vue({
       }
     },
 
-    updatePresent(){
+    updatePresent(userId, presentId, updatedPresent){
+      axios
+        .update(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
+        .then(response => {
 
+        })
+        .catch({
+
+        });
     },
-    
+
     showModal() {
       this.editModal = true;
     },

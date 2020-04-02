@@ -57,6 +57,7 @@
           <button class="col-2 btn btn-outline-success" type="button" v-on:click="login()">Login</button>
         </div>
         <button v-if="authenticated" type="button" class="btn btn-outline-primary" v-on:click="getPresents()">List presents</button>
+        <button v-if="authenticated" type="button" class="btn btn-outline-primary" v-on:click="selectedPresent(presentId)">Add present</button>
       </div>
       <div v-if="presentsData != null" class="presentCards">
         <div class="row">
