@@ -68,8 +68,8 @@
                   <h4 class="card-title">{{present.present_name}}</h4>
                   <p class="card-text">User: {{present.user_name}} <br> <a v-bind:href="present.link">Shop</a></p>
                   <br>
-                  <button type="button"  v-on:click="selectPresent(present.present_id)" class="btn btn-warning">Edit</button>
-                  <button type="button" v-on:click="deletePresent(present.user_id, present.present_id)" class="btn btn-danger">Delete</button>
+                  <button v-if="present.user_name === input.username" type="button"  v-on:click="selectPresent(present.present_id)" class="btn btn-warning">Edit</button>
+                  <button v-if="present.user_name === input.username" type="button" v-on:click="deletePresent(present.user_id, present.present_id)" class="btn btn-danger">Delete</button>
                   <p class="card-text"><small class="text-muted">Submitted on: {{present.submission_date}}</small></p>
                 </div>
               </div>
@@ -114,7 +114,8 @@
           </div>
         </div>
         <div slot="footer">
-          <button type="button" class="btn btn-secondary" v-on:click="hideModal(selectedPresent.user_id, selectedPresent.present_id)">Close</button>
+          <button type="button" class="btn btn-success" v-on:click="updateModal(selectedPresent.user_id, selectedPresent.present_id)">Update</button>
+          <button type="button" class="btn btn-secondary" v-on:click="hideModal()">Close</button>
         </div>
       </modal>
       <script type="text/x-template" id="modal-template">

@@ -7,7 +7,7 @@ var app = new Vue({
 
   //------- data --------
   data: {
-    serviceURL: 'https://info3103.cs.unb.ca:8004',
+    serviceURL: 'https://info3103.cs.unb.ca:8038',
     mainPage: true,
     loginModal: false,
     authenticated: false,
@@ -84,7 +84,7 @@ var app = new Vue({
 
     deletePresent(userId, presentId) {
       axios
-        .delete(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
+        .delete(this.serviceURL + '/users/' + userId + '/presents/' + presentId)
         .then(response => {
           axios
             .get(this.serviceURL + '/presents')
@@ -95,7 +95,7 @@ var app = new Vue({
               alert('Unable to retrieve the presents back');
               console.log(e);
             });
-          alert("deleted present with ID: " + presentId);
+          alert('deleted present with ID: ' + presentId);
         })
         .catch(e => {
           alert('Unable to delete present: ' + presentId);
@@ -112,18 +112,19 @@ var app = new Vue({
       }
     },
 
-    updatePresent(userId, presentId){
+    updatePresent(userId, presentId) {
       axios
-        .put(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
+        .put(this.serviceURL + '/users/' + userId + '/presents/' + presentId, {
+          present_name: this.selectedPresent.present_name,
+          link: this.selectedPresent.link,
+          img_url: this.selectedPresent.img_url
+        })
         .then(response => {
-          present_id = presentId;
-          present_name = this.input.pn;
-          link = this.input.lnk;
-          img_url = this.input.img;
+          alert('Present updated successfully!');
         })
         .catch(e => {
-          console.log(e.response);
-          alert('Unable to modufy db');
+          console.log(e);
+          alert('Unable to modify db');
         });
     },
 
@@ -131,8 +132,11 @@ var app = new Vue({
       this.editModal = true;
     },
 
-    hideModal(userId,presentId) {
-      this.updatePresent(userId,presentId);
+    hideModal() {
+      this.editModal = false;
+    },
+    updateModal(userId, presentId, pName, imgUrl, link) {
+      this.updatePresent(userId, presentId, pName, imgUrl, link);
       this.editModal = false;
     }
   }
