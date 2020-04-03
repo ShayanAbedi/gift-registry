@@ -7,7 +7,7 @@ var app = new Vue({
 
   //------- data --------
   data: {
-    serviceURL: 'https://info3103.cs.unb.ca:8038',
+    serviceURL: 'https://info3103.cs.unb.ca:8004',
     mainPage: true,
     loginModal: false,
     authenticated: false,
@@ -76,11 +76,26 @@ var app = new Vue({
         });
     },
 
-    /*addPresent(presentId){
-      axios
-      .post(this.serviceURL + '/users/' + userId + '/presents/'+ presentId)
 
-    },*/
+    addPresent(){
+      this.showModal();
+      axios
+        .post(this.serviceURL + '/users/4/presents', {
+          present_name : "Name",
+          link : "Link",
+          img_url : "URL",
+          user_id : "4"
+        })
+        .then(response => {
+          console.log(response);
+          this.hideModal();
+        })
+        .catch(e => {
+          alert("problem adding new present");
+          console.log(e);
+        })
+
+    },
 
     deletePresent(userId, presentId) {
       axios
