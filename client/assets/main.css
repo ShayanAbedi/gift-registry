@@ -103,3 +103,20 @@ body {
   border: 1px solid #4aae9b;
   border-radius: 2px;
 }
+.modal {
+  background-color: rgba(40, 40, 40);
+}
+.card {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 3rem;
+}
+.addPresent-btn {
+  margin-left: 10px;
+}
+.username-field {
+  margin-bottom: 5px;
+}
+.login-btn {
+  margin-top: 5px;
+}

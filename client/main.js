@@ -7,13 +7,15 @@ var app = new Vue({
 
   //------- data --------
   data: {
-    serviceURL: 'https://info3103.cs.unb.ca:8004',
+    serviceURL: 'https://info3103.cs.unb.ca:8038',
     mainPage: true,
-    loginModal: false,
     authenticated: false,
     loggedIn: null,
+    loginModal: false,
     presentsData: null,
+    userData: null,
     editModal: false,
+    addModal: false,
     input: {
       username: '',
       password: ''
@@ -25,6 +27,11 @@ var app = new Vue({
       user_name: '',
       present_id: '',
       user_id: ''
+    },
+    addedPresent: {
+      present_name: '',
+      link: '',
+      img_url: ''
     }
   },
   methods: {
@@ -76,25 +83,23 @@ var app = new Vue({
         });
     },
 
-
-    addPresent(){
-      this.showModal();
+    addPresent(userId) {
       axios
-        .post(this.serviceURL + '/users/4/presents', {
-          present_name : "Name",
-          link : "Link",
-          img_url : "URL",
-          user_id : "4"
+        .post(this.serviceURL + '/users/' + userId + '/presents', {
+          present_name: this.addedPresent.present_name,
+          link: this.addedPresent.link,
+          img_url: this.addedPresent.img_url
         })
         .then(response => {
-          console.log(response);
-          this.hideModal();
+          this.addedPresent.present_name = '';
+          this.addedPresent.link = '';
+          this.addedPresent.img_url = '';
+          alert('Present added successfully!');
         })
         .catch(e => {
-          alert("problem adding new present");
           console.log(e);
-        })
-
+          alert('Unable to add the present to database');
+        });
     },
 
     deletePresent(userId, presentId) {
@@ -110,7 +115,7 @@ var app = new Vue({
               alert('Unable to retrieve the presents back');
               console.log(e);
             });
-          alert('deleted present with ID: ' + presentId);
+          alert('Deleting the present with ID ' + presentId);
         })
         .catch(e => {
           alert('Unable to delete present: ' + presentId);
@@ -119,7 +124,7 @@ var app = new Vue({
     },
 
     selectPresent(presentId) {
-      this.showModal();
+      this.showEditModal();
       for (element in this.presentsData) {
         if (this.presentsData[element].present_id == presentId) {
           this.selectedPresent = this.presentsData[element];
@@ -139,20 +144,33 @@ var app = new Vue({
         })
         .catch(e => {
           console.log(e);
-          alert('Unable to modify db');
+          alert('Unable to modify the present on the database');
         });
     },
 
-    showModal() {
+    showEditModal() {
       this.editModal = true;
     },
 
     hideModal() {
       this.editModal = false;
     },
-    updateModal(userId, presentId, pName, imgUrl, link) {
-      this.updatePresent(userId, presentId, pName, imgUrl, link);
+    updateModal(userId, presentId) {
+      this.updatePresent(userId, presentId);
       this.editModal = false;
+    },
+    addToModal() {
+      axios
+        .get(this.serviceURL + '/users/' + this.input.username)
+        .then(response => {
+          this.userData = response.data.user;
+          this.addPresent(this.userData.user_id);
+        })
+        .catch(e => {
+          alert('Unable to retrieve the user info back');
+          console.log(e);
+        });
+      this.addModal = false;
     }
   }
   //------- END methods --------

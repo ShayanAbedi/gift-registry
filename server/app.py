@@ -225,8 +225,8 @@ class Users(Resource):
 class User(Resource):
     # GET: Return identified user resource
 	#
-	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/<int:userId>
-	def get(self, userId):
+	# Example request: curl http://info3103.cs.unb.ca:xxxxx/users/<string:userName>
+	def get(self, userName):
 		try:
 			dbConnection = pymysql.connect(
 				settings.DB_HOST,
@@ -237,7 +237,7 @@ class User(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getUserInfo'
 			cursor = dbConnection.cursor()
-			sqlArgs = (userId,)
+			sqlArgs = (userName,)
 			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
 			if row is None:
@@ -519,7 +519,7 @@ class Present(Resource):
 api = Api(app)
 api.add_resource(SignIn, '/signin')
 api.add_resource(Users, '/users')
-api.add_resource(User, '/users/<int:userId>')
+api.add_resource(User, '/users/<string:userName>')
 api.add_resource(Presents,'/presents')
 api.add_resource(UserPresents,'/users/<int:userId>/presents')
 api.add_resource(Present,'/users/<int:userId>/presents/<int:presentId>')
