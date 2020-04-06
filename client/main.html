@@ -1,50 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/cyborg/bootstrap.min.css" rel="stylesheet" integrity="sha384-l7xaoY0cJM4h9xh1RfazbgJVUZvdtyLWPueWNtLAphf/UbBgOVzqbOTogxPwYLHM" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Baloo+Thambi+2&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./assets/main.css"/>
-    <title>Gift Registry</title>
-  </head>
-  <body>
 
-    <div class="container-fluid" id="app">
-      <div v-if="mainPage">
-        <div id="landing-header">
-          <h1>Welcome to GiftRegistry</h1>
-         <a v-on:click="mainPage = false" class="btn btn-lg btn-secondary">CREATE A PRESENT LIST</a>
-         </div>
-         <ul class="background">
-           <li></li>
-         </ul>
+<head>
+  <script src="https://kit.fontawesome.com/feef190f05.js" crossorigin="anonymous"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/cyborg/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-l7xaoY0cJM4h9xh1RfazbgJVUZvdtyLWPueWNtLAphf/UbBgOVzqbOTogxPwYLHM" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Baloo+Thambi+2&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/main.css" />
+  <title>Gift Registry</title>
+</head>
+
+<body>
+
+  <div class="container-fluid" id="app">
+    <div v-if="mainPage">
+      <div id="landing-header">
+        <h1>Welcome to GiftRegistry</h1>
+        <a v-on:click="mainPage = false" class="btn btn-lg btn-secondary">CREATE A PRESENT LIST</a>
       </div>
-      <div v-if="!mainPage">
-        <nav class="navbar navbar-expand-md navbar-dark bg-light">
-          <div class="container-fluid">
-         <a class="navbar-brand" href="https://info3103.cs.unb.ca:8038/static/main.html" v-on:click="mainPage = true" >GiftRegistry</a>
-         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-           <span class="navbar-toggler-icon"></span>
-         </button>
+      <ul class="background">
+        <li></li>
+      </ul>
+    </div>
+    <div v-if="!mainPage">
+      <nav class="navbar navbar-expand-md navbar-dark bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="https://info3103.cs.unb.ca:8038/static/main.html"
+            v-on:click="mainPage = true">GiftRegistry</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
-               <li v-if="authenticated" class="nav-item ">
-                 <a class="nav-link" href="#"> <i class="fas fa-user"></i> {{input.username}}</a>
-             </li>
-             <li v-if="authenticated" class="nav-item">
-                 <a class="nav-link" href="">Logout <i class="fas fa-sign-out-alt"></i></a>
-             </li>
+              <li v-if="authenticated" class="nav-item ">
+                <a class="nav-link" href="#"> <i class="fas fa-user"></i> {{input.username}}</a>
+              </li>
+              <li v-if="authenticated" class="nav-item">
+                <a class="nav-link" href="">Logout <i class="fas fa-sign-out-alt"></i></a>
+              </li>
 
             </ul>
-              <!-- <form  v-if="authenticated" class="form-inline mt-2 mt-md-0"action="/bars" method="GET" class="form-inline" id="bar-search">
+            <!-- <form  v-if="authenticated" class="form-inline mt-2 mt-md-0"action="/bars" method="GET" class="form-inline" id="bar-search">
                   <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search..." aria-label="Search">
                   <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
               </form> -->
           </div>
 
 
-         </div>
-       </nav>
+        </div>
+      </nav>
       <div class="jumbotron">
         <h1 class="display-3">Welcome to Gift Registry<sup><small>TM</small></sup></sup></h1>
         <p class="lead">
@@ -52,101 +58,116 @@
         </p>
         <hr class="my-4" />
         <div v-if="!authenticated" class="form-group text-center">
-          <input class="col-2 mx-auto form-control" type="text" name="username" v-model="input.username" placeholder="Username" />
-          <input class="col-2 mx-auto form-control" type="password" name="password" v-model="input.password" placeholder="Password" />
-          <button class="col-2 btn btn-outline-success" type="button" v-on:click="login()">Login</button>
+          <input class="col-2 mx-auto form-control" type="text" name="username" v-model="input.username"
+            placeholder="Username" />
+          <input class="col-2 mx-auto form-control" type="password" name="password" v-model="input.password"
+            placeholder="Password" />
+          <button class="col-2 btn btn-outline-success" type="button" v-on:click="login()">Login <i
+              class="fas fa-sign-in-alt"></i></button>
         </div>
-        <button v-if="authenticated" type="button" class="btn btn-outline-primary" v-on:click="getPresents()">List presents</button>
-        <button v-if="authenticated" type="button" class="btn btn-outline-primary addPresent-btn" v-on:click="addModal = true">Add present</button>
+        <button v-if="authenticated" type="button" class="btn btn-outline-primary" v-on:click="getPresents()">List
+          presents</button>
+        <button v-if="authenticated" type="button" class="btn btn-outline-primary addPresent-btn"
+          v-on:click="addModal = true">Add present</button>
       </div>
       <div v-if="presentsData != null" class="container">
         <div class="row mt-2 justify-content-center">
-        <div v-for="present in presentsData">
-              <div class="card" style="width: 20rem; height: 30rem;">
-                <img class="card-img-top" v-bind:src="present.img_url" alt="Card image cap">
-                <div class="card-block">
-                  <h4 class="card-title">{{present.present_name}}</h4>
-                  <p class="card-text">User: {{present.user_name}} <br> <a v-bind:href="present.link">Shop</a></p>
-                  <br>
-                  <button type="button"  v-on:click="selectPresent(present.present_id)" class="btn btn-warning">Edit</button>
-                  <button  type="button" v-on:click="deletePresent(present.user_id, present.present_id)" class="btn btn-danger">Delete</button>
-                  <p class="card-text"><small class="text-muted">Submitted on: {{present.submission_date}}</small></p>
-                </div>
+          <div v-for="present in presentsData">
+            <div class="card" style="width: 20rem; height: 30rem;">
+              <img class="card-img-top" v-bind:src="present.img_url" alt="Card image cap">
+              <div class="card-block">
+                <h4 class="card-title">{{present.present_name}}</h4>
+                <p class="card-text">User: {{present.user_name}} <br> <a v-bind:href="present.link">Shop</a></p>
+                <br>
+                <button type="button" v-if="present.user_name === input.username"
+                  v-on:click="selectPresent(present.present_id)" class="btn btn-warning">Edit</button>
+                <button type="button" v-if="present.user_name === input.username"
+                  v-on:click="deletePresent(present.user_id, present.present_id)" class="btn btn-danger">Delete</button>
+                <p class="card-text"><small class="text-muted">Submitted on: {{present.submission_date}}</small></p>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
-      <div  v-if="loginModal" class="form-group text-center">
-        <input class="col-4 mx-auto form-control username-field" type="text" name="username" v-model="input.username" placeholder="Username" />
-        <input class="col-4 mx-auto form-control" type="password" name="password" v-model="input.password" placeholder="Password" />
-        <button class="col-4 btn btn-outline-success login-btn" type="button" v-on:click="login()">Login</button>
+    <div v-if="loginModal" class="form-group text-center">
+      <input class="col-4 mx-auto form-control username-field" type="text" name="username" v-model="input.username"
+        placeholder="Username" />
+      <input class="col-4 mx-auto form-control" type="password" name="password" v-model="input.password"
+        placeholder="Password" />
+      <button class="col-4 btn btn-outline-success login-btn" type="button" v-on:click="login()">Login</button>
+    </div>
+    <modal v-if="addModal" @close="hideModal">
+      <div slot="header" class="modal-header">
+        Add Present Data
       </div>
-      <modal v-if="addModal" @close="hideModal">
-        <div slot="header" class="modal-header">
-          Add Present Data
-        </div>
-        <div slot="body">
-          <div class="form-group col-6">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text modal-prepend">Present Name</span>
-              </div>
-              <input class="col-8 form-control" type="text" name="pn" v-model="addedPresent.present_name" placeholder="Present Name" />
+      <div slot="body">
+        <div class="form-group col-6">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text modal-prepend">Present Name</span>
             </div>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text modal-prepend">Image URL</span>
-              </div>
-              <input class="col-8 form-control" type="text" name="img" v-model="addedPresent.img_url"  placeholder="Image URL" />
+            <input class="col-8 form-control" type="text" name="pn" v-model="addedPresent.present_name"
+              placeholder="Present Name" />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text modal-prepend">Image URL</span>
             </div>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text  modal-prepend">Link</span>
-              </div>
-              <input class="col-8 form-control" type="text" name="lnk" v-model="addedPresent.link"  placeholder="Link" />
+            <input class="col-8 form-control" type="text" name="img" v-model="addedPresent.img_url"
+              placeholder="Image URL" />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text  modal-prepend">Link</span>
             </div>
+            <input class="col-8 form-control" type="text" name="lnk" v-model="addedPresent.link" placeholder="Link" />
           </div>
         </div>
-        <div slot="footer">
-          <button type="button" class="btn btn-success" v-on:click="addToModal()" >Add</button>
-          <button type="button" class="btn btn-secondary" v-on:click="hideModal()" >Close</button>
-        </div>
-      </modal>
+      </div>
+      <div slot="footer">
+        <button type="button" class="btn btn-success" v-on:click="addToModal()">Add</button>
+        <button type="button" class="btn btn-secondary" v-on:click="hideModal()">Close</button>
+      </div>
+    </modal>
 
-      <modal v-if="editModal" @close="hideModal">
-        <div slot="header" class="modal-header">
-          Edit Present Data
-        </div>
-        <div slot="body">
-          <div class="form-group col-6">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text  modal-prepend">Present Name</span>
-              </div>
-              <input class="col-8 form-control" type="text" name="pn" v-model="selectedPresent.present_name" placeholder="Present Name" />
+    <modal v-if="editModal" @close="hideModal">
+      <div slot="header" class="modal-header">
+        Edit Present Data
+      </div>
+      <div slot="body">
+        <div class="form-group col-6">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text  modal-prepend">Present Name</span>
             </div>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text modal-prepend">Image URL</span>
-              </div>
-              <input class="col-8 form-control" type="text" name="img" v-model="selectedPresent.img_url" placeholder="Image URL" />
+            <input class="col-8 form-control" type="text" name="pn" v-model="selectedPresent.present_name"
+              placeholder="Present Name" />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text modal-prepend">Image URL</span>
             </div>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text  modal-prepend">Link</span>
-              </div>
-              <input class="col-8 form-control" type="text" name="lnk" v-model="selectedPresent.link" placeholder="Link" />
+            <input class="col-8 form-control" type="text" name="img" v-model="selectedPresent.img_url"
+              placeholder="Image URL" />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text  modal-prepend">Link</span>
             </div>
+            <input class="col-8 form-control" type="text" name="lnk" v-model="selectedPresent.link"
+              placeholder="Link" />
           </div>
         </div>
-        <div slot="footer">
-          <button type="button" class="btn btn-success" v-on:click="updateModal(selectedPresent.user_id, selectedPresent.present_id)">Update</button>
-          <button type="button" class="btn btn-secondary" v-on:click="hideModal()">Close</button>
-        </div>
-      </modal>
-      <script type="text/x-template" id="modal-template">
-        <transition name="modal">
+      </div>
+      <div slot="footer">
+        <button type="button" class="btn btn-success"
+          v-on:click="updateModal(selectedPresent.user_id, selectedPresent.present_id)">Update</button>
+        <button type="button" class="btn btn-secondary" v-on:click="hideModal()">Close</button>
+      </div>
+    </modal>
+    <script type="text/x-template" id="modal-template">
+      <transition name="modal">
           <div class="modal-backdrop">
           <div class="modal">
             <header class="modal-header">
@@ -179,7 +200,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="./main.js" ></script>
+  <script type="text/javascript" src="./main.js"></script>
 
 </body>
+
 </html>
